@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ЛьготНавигатор — узнайте, что вам положено</title>
+<title>Eligible — узнайте, что вам положено</title>
 <meta name="description" content="Четыре вопроса — и вы получите персональный список выплат, компенсаций и льгот с перечнем документов." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -30,635 +30,311 @@
 
 *,*::before,*::after{box-sizing:border-box;}
 [hidden]{display:none !important;}
-
 html{scroll-behavior:smooth;}
 
 body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
-  font-size:16px;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:'Manrope',system-ui,-apple-system,sans-serif;
+  font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden;
 }
 
-/* мягкое фоновое свечение по всему сайту */
+/* Фоновое свечение */
 body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
   background:
     radial-gradient(900px 600px at 15% -5%, rgba(95,227,161,.10), transparent 60%),
     radial-gradient(800px 600px at 90% 5%, rgba(122,167,255,.10), transparent 60%);
 }
 
-h1,h2,h3,h4{
-  font-family:'Unbounded',system-ui,sans-serif;
-  font-weight:600;
-  line-height:1.15;
-  letter-spacing:-.02em;
-  margin:0;
-}
+h1,h2,h3,h4{ font-family:'Unbounded',sans-serif; font-weight:600; line-height:1.15; letter-spacing:-.02em; margin:0; }
+p{margin:0;} a{color:inherit;text-decoration:none;}
+.container{ width:100%; max-width:var(--container); margin:0 auto; padding:0 24px; position:relative; z-index:1; }
+.grad{ background:linear-gradient(100deg,var(--accent) 0%,var(--accent-2) 55%,var(--warm) 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
 
-p{margin:0;}
-a{color:inherit;text-decoration:none;}
-
-.container{
-  width:100%;
-  max-width:var(--container);
-  margin:0 auto;
-  padding:0 24px;
-  position:relative;
-  z-index:1;
-}
-
-.grad{
-  background:linear-gradient(100deg,var(--accent) 0%,var(--accent-2) 55%,var(--warm) 100%);
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-}
-
-/* ============ 2. КНОПКИ ============ */
+/* ============ 2. КНОПКИ И ПОЛЯ ============ */
 .btn{
-  --btn-h:54px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  height:var(--btn-h);
-  padding:0 26px;
-  border-radius:999px;
-  border:1px solid transparent;
-  font-family:inherit;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-  position:relative;
-  overflow:hidden;
-  transition:transform .35s var(--ease), box-shadow .35s var(--ease),
-             background .3s var(--ease), border-color .3s var(--ease), opacity .3s;
+  --btn-h:54px; display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  height:var(--btn-h); padding:0 26px; border-radius:999px; border:1px solid transparent;
+  font-family:inherit; font-size:15px; font-weight:700; cursor:pointer; position:relative; overflow:hidden;
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease), background .3s var(--ease), border-color .3s var(--ease), opacity .3s;
 }
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none !important;}
+.btn--primary{ background:linear-gradient(180deg,#6FEFB2,#3FD58C); color:#06120C; box-shadow:0 10px 30px -12px rgba(95,227,161,.75); }
+.btn--primary:not(:disabled):hover{ transform:translateY(-2px); box-shadow:0 18px 40px -14px rgba(95,227,161,.9); }
+.btn--primary::after{ content:""; position:absolute; inset:0; background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%); transform:translateX(-120%); transition:transform .8s var(--ease); }
+.btn--primary:not(:disabled):hover::after{ transform:translateX(120%); }
+.btn--ghost{ background:rgba(255,255,255,.03); border-color:var(--line-strong); color:var(--text); }
+.btn--ghost:not(:disabled):hover{ background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.28); transform:translateY(-2px); }
+.btn--small{ --btn-h:40px; padding:0 18px; font-size:13px; }
+.btn--danger{ background:rgba(255,95,95,.1); border-color:rgba(255,95,95,.3); color:#FF8A8A; }
+.btn--danger:hover{ background:rgba(255,95,95,.2); border-color:rgba(255,95,95,.5); }
 
-.btn--primary{
-  background:linear-gradient(180deg,#6FEFB2,#3FD58C);
-  color:#06120C;
-  box-shadow:0 10px 30px -12px rgba(95,227,161,.75);
+.input{
+  width:100%; height:52px; padding:0 18px; border-radius:14px;
+  border:1px solid var(--line-strong); background:rgba(0,0,0,.2); color:var(--text);
+  font-family:inherit; font-size:15px; font-weight:500; outline:none;
+  transition:border-color .3s, box-shadow .3s, background .3s;
 }
-.btn--primary:not(:disabled):hover{
-  transform:translateY(-2px);
-  box-shadow:0 18px 40px -14px rgba(95,227,161,.9);
-}
-/* блик по кнопке */
-.btn--primary::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);
-  transform:translateX(-120%);
-  transition:transform .8s var(--ease);
-}
-.btn--primary:not(:disabled):hover::after{transform:translateX(120%);}
+.input:focus{ border-color:var(--accent); background:rgba(95,227,161,.05); box-shadow:0 0 0 3px rgba(95,227,161,.15); }
+.input::placeholder{ color:rgba(255,255,255,.3); }
 
-.btn--ghost{
-  background:rgba(255,255,255,.03);
-  border-color:var(--line-strong);
-  color:var(--text);
+/* ============ 3. АВТОРИЗАЦИЯ ============ */
+.auth-screen{
+  position:fixed; inset:0; z-index:100; background:var(--bg);
+  display:flex; align-items:center; justify-content:center; padding:24px;
+  transition:opacity .4s var(--ease), visibility .4s;
 }
-.btn--ghost:not(:disabled):hover{
-  background:rgba(255,255,255,.07);
-  border-color:rgba(255,255,255,.28);
-  transform:translateY(-2px);
-}
-
-.btn__arrow{transition:transform .35s var(--ease);}
-.btn:hover .btn__arrow{transform:translateX(4px);}
-
-/* ============ 3. НАВИГАЦИЯ ============ */
-.nav{
-  position:sticky;
-  top:0;
-  z-index:50;
-  background:rgba(10,13,20,.72);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--line);
-}
-.nav__inner{
-  max-width:var(--container);
-  margin:0 auto;
-  padding:16px 24px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:24px;
-}
-.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.02em;}
-.brand__mark{
-  width:34px;height:34px;border-radius:11px;
-  background:linear-gradient(140deg,var(--accent),var(--accent-2));
-  box-shadow:0 8px 24px -8px rgba(95,227,161,.8);
-  position:relative;
-  flex:0 0 auto;
-}
-.brand__mark::after{
-  content:"";
-  position:absolute;inset:9px;
-  border-radius:4px;
-  background:var(--bg);
-}
-.brand__text{font-family:'Unbounded',sans-serif;font-size:16px;}
-
-.nav__links{display:flex;gap:28px;font-size:14px;font-weight:600;color:var(--muted);}
-.nav__links a{transition:color .25s var(--ease);position:relative;}
-.nav__links a::after{
-  content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;
-  background:var(--accent);transform:scaleX(0);transform-origin:left;
-  transition:transform .3s var(--ease);
-}
-.nav__links a:hover{color:var(--text);}
-.nav__links a:hover::after{transform:scaleX(1);}
-
-/* ============ 4. HERO ============ */
-.hero{
-  position:relative;
-  padding:120px 0 90px;
-  overflow:hidden;
+.auth-screen.is-hidden{ opacity:0; visibility:hidden; pointer-events:none; }
+.auth-card{
+  width:100%; max-width:420px; padding:40px 32px; border-radius:24px;
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.01)), var(--surface);
+  border:1px solid var(--line); box-shadow:0 40px 100px -40px rgba(0,0,0,.9);
   text-align:center;
 }
-.hero__glow{
-  position:absolute;
-  border-radius:50%;
-  filter:blur(90px);
-  opacity:.55;
-  pointer-events:none;
-}
-.hero__glow--a{
-  width:520px;height:520px;top:-180px;left:-120px;
-  background:radial-gradient(circle,rgba(95,227,161,.5),transparent 70%);
-  animation:floatA 16s ease-in-out infinite;
-}
-.hero__glow--b{
-  width:560px;height:560px;top:-120px;right:-160px;
-  background:radial-gradient(circle,rgba(122,167,255,.45),transparent 70%);
-  animation:floatB 20s ease-in-out infinite;
-}
-@keyframes floatA{
-  0%,100%{transform:translate(0,0) scale(1);}
-  50%{transform:translate(40px,50px) scale(1.12);}
-}
-@keyframes floatB{
-  0%,100%{transform:translate(0,0) scale(1);}
-  50%{transform:translate(-50px,40px) scale(1.08);}
-}
+.auth-logo{ font-family:'Unbounded',sans-serif; font-size:24px; font-weight:700; margin-bottom:8px; letter-spacing:-.03em; }
+.auth-desc{ font-size:14px; color:var(--muted); margin-bottom:28px; }
 
-.hero__inner{display:flex;flex-direction:column;align-items:center;}
+.auth-form{ display:flex; flex-direction:column; gap:14px; text-align:left; }
+.form-group{ display:flex; flex-direction:column; gap:6px; }
+.form-label{ font-size:12.5px; font-weight:700; color:var(--muted); padding-left:4px; }
+.auth-error{ color:#FF8A8A; font-size:13px; font-weight:600; margin-top:-4px; display:none; }
+.auth-error.is-visible{ display:block; animation:stepIn .3s var(--ease); }
 
-.pill{
-  display:inline-flex;align-items:center;gap:9px;
-  padding:8px 16px;
-  border-radius:999px;
-  border:1px solid var(--line-strong);
-  background:rgba(255,255,255,.035);
-  font-size:13px;font-weight:600;color:var(--muted);
-  backdrop-filter:blur(8px);
-}
-.pill::before{
-  content:"";
-  width:7px;height:7px;border-radius:50%;
-  background:var(--accent);
-  box-shadow:0 0 0 0 rgba(95,227,161,.6);
-  animation:dotPulse 2.4s ease-out infinite;
-}
-@keyframes dotPulse{
-  0%{box-shadow:0 0 0 0 rgba(95,227,161,.6);}
-  70%{box-shadow:0 0 0 10px rgba(95,227,161,0);}
-  100%{box-shadow:0 0 0 0 rgba(95,227,161,0);}
-}
+.auth-tabs{ display:flex; background:rgba(0,0,0,.2); border-radius:12px; padding:4px; margin-bottom:24px; border:1px solid var(--line); }
+.auth-tab{ flex:1; padding:10px; border-radius:8px; font-size:13px; font-weight:700; color:var(--muted); cursor:pointer; transition:all .3s var(--ease); }
+.auth-tab.is-active{ background:var(--surface-2); color:var(--text); box-shadow:0 2px 10px rgba(0,0,0,.2); }
 
-.hero__title{
-  font-size:clamp(34px,6vw,68px);
-  margin:28px 0 22px;
-  max-width:900px;
-}
-.hero__sub{
-  max-width:620px;
-  color:var(--muted);
-  font-size:clamp(15px,1.6vw,18px);
-  margin-bottom:40px;
-}
-.hero__actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+/* ============ 4. НАВИГАЦИЯ ============ */
+.nav{ position:sticky; top:0; z-index:50; background:rgba(10,13,20,.72); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid var(--line); }
+.nav__inner{ max-width:var(--container); margin:0 auto; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.brand{ display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:-.02em; }
+.brand__mark{ width:34px; height:34px; border-radius:11px; background:linear-gradient(140deg,var(--accent),var(--accent-2)); box-shadow:0 8px 24px -8px rgba(95,227,161,.8); position:relative; flex:0 0 auto; }
+.brand__mark::after{ content:""; position:absolute; inset:9px; border-radius:4px; background:var(--bg); }
+.brand__text{ font-family:'Unbounded',sans-serif; font-size:16px; }
 
-/* ============ 5. СТАТИСТИКА ============ */
-.stats{padding:10px 0 80px;}
-.stats__inner{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
-  overflow:hidden;
-}
-.stat{
-  padding:34px 20px;
-  text-align:center;
-  position:relative;
-  transition:background .35s var(--ease);
-}
-.stat + .stat::before{
-  content:"";position:absolute;left:0;top:22%;bottom:22%;width:1px;
-  background:var(--line);
-}
-.stat:hover{background:rgba(255,255,255,.03);}
-.stat__num{
-  display:block;
-  font-family:'Unbounded',sans-serif;
-  font-size:clamp(26px,3.4vw,40px);
-  font-weight:600;
-  background:linear-gradient(180deg,#fff,#9FB3CE);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.stat__label{display:block;margin-top:6px;font-size:13.5px;color:var(--muted);font-weight:600;}
+.nav__links{ display:flex; gap:28px; font-size:14px; font-weight:600; color:var(--muted); }
+.nav__links a{ transition:color .25s var(--ease); position:relative; }
+.nav__links a::after{ content:""; position:absolute; left:0; right:0; bottom:-6px; height:1px; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform .3s var(--ease); }
+.nav__links a:hover{ color:var(--text); }
+.nav__links a:hover::after{ transform:scaleX(1); }
 
-/* ============ 6. ЗАГОЛОВКИ СЕКЦИЙ ============ */
-.section-head{text-align:center;max-width:640px;margin:0 auto 52px;}
-.section-head h2{font-size:clamp(26px,4vw,42px);margin-bottom:14px;}
-.section-head p{color:var(--muted);font-size:16px;}
+.nav__user{ display:flex; align-items:center; gap:12px; }
+.user-badge{ display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; background:rgba(255,255,255,.05); border:1px solid var(--line); padding:6px 14px; border-radius:999px; }
+.user-badge__avatar{ width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; }
 
-.how{padding:40px 0 90px;}
-.how__grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:20px;
-}
-.how-card{
-  padding:34px 28px;
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.012));
-  transition:transform .45s var(--ease), border-color .45s var(--ease), background .45s var(--ease);
-}
-.how-card:hover{
-  transform:translateY(-6px);
-  border-color:rgba(95,227,161,.35);
-  background:linear-gradient(180deg,rgba(95,227,161,.07),rgba(255,255,255,.015));
-}
-.how-card__idx{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:42px;height:42px;border-radius:13px;
-  background:rgba(95,227,161,.12);
-  border:1px solid rgba(95,227,161,.28);
-  color:var(--accent);
-  font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;
-  margin-bottom:20px;
-}
-.how-card h3{font-size:18px;margin-bottom:10px;}
-.how-card p{color:var(--muted);font-size:14.5px;}
+/* ============ 5. HERO ============ */
+.hero{ position:relative; padding:120px 0 90px; overflow:hidden; text-align:center; }
+.hero__glow{ position:absolute; border-radius:50%; filter:blur(90px); opacity:.55; pointer-events:none; }
+.hero__glow--a{ width:520px; height:520px; top:-180px; left:-120px; background:radial-gradient(circle,rgba(95,227,161,.5),transparent 70%); animation:floatA 16s ease-in-out infinite; }
+.hero__glow--b{ width:560px; height:560px; top:-120px; right:-160px; background:radial-gradient(circle,rgba(122,167,255,.45),transparent 70%); animation:floatB 20s ease-in-out infinite; }
+@keyframes floatA{ 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(40px,50px) scale(1.12);} }
+@keyframes floatB{ 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-50px,40px) scale(1.08);} }
 
-/* ============ 7. КВИЗ ============ */
-.quiz{padding:40px 0 100px;}
+.hero__inner{ display:flex; flex-direction:column; align-items:center; }
+.pill{ display:inline-flex; align-items:center; gap:9px; padding:8px 16px; border-radius:999px; border:1px solid var(--line-strong); background:rgba(255,255,255,.035); font-size:13px; font-weight:600; color:var(--muted); backdrop-filter:blur(8px); }
+.pill::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 0 rgba(95,227,161,.6); animation:dotPulse 2.4s ease-out infinite; }
+@keyframes dotPulse{ 0%{box-shadow:0 0 0 0 rgba(95,227,161,.6);} 70%{box-shadow:0 0 0 10px rgba(95,227,161,0);} 100%{box-shadow:0 0 0 0 rgba(95,227,161,0);} }
 
-.quiz-card{
-  max-width:840px;
-  margin:0 auto;
-  border:1px solid var(--line);
-  border-radius:26px;
-  background:
-    linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015)),
-    var(--surface);
-  padding:34px;
-  box-shadow:0 40px 100px -60px rgba(0,0,0,.9);
-}
-.quiz-card__top{
-  display:flex;justify-content:space-between;align-items:center;
-  font-size:13.5px;font-weight:700;color:var(--muted);
-  margin-bottom:14px;
-}
-.quiz-card__top b{color:var(--text);}
-.quiz-card__pct{color:var(--accent);}
+.hero__title{ font-size:clamp(34px,6vw,68px); margin:28px 0 22px; max-width:900px; }
+.hero__sub{ max-width:620px; color:var(--muted); font-size:clamp(15px,1.6vw,18px); margin-bottom:40px; }
+.hero__actions{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
 
-.progress{
-  height:6px;border-radius:999px;
-  background:rgba(255,255,255,.07);
-  overflow:hidden;
-  margin-bottom:34px;
-}
-.progress__bar{
-  height:100%;width:25%;
-  border-radius:999px;
-  background:linear-gradient(90deg,var(--accent),var(--accent-2));
-  box-shadow:0 0 18px rgba(95,227,161,.6);
-  transition:width .5s var(--ease);
-}
+/* ============ 6. СТАТИСТИКА ============ */
+.stats{ padding:10px 0 80px; }
+.stats__inner{ display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--line); border-radius:var(--radius); background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012)); overflow:hidden; }
+.stat{ padding:34px 20px; text-align:center; position:relative; transition:background .35s var(--ease); }
+.stat + .stat::before{ content:""; position:absolute; left:0; top:22%; bottom:22%; width:1px; background:var(--line); }
+.stat:hover{ background:rgba(255,255,255,.03); }
+.stat__num{ display:block; font-family:'Unbounded',sans-serif; font-size:clamp(26px,3.4vw,40px); font-weight:600; background:linear-gradient(180deg,#fff,#9FB3CE); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.stat__label{ display:block; margin-top:6px; font-size:13.5px; color:var(--muted); font-weight:600; }
 
-.step{display:none;}
-.step.is-active{display:block;animation:stepIn .45s var(--ease);}
-@keyframes stepIn{
-  from{opacity:0;transform:translateY(14px);}
-  to{opacity:1;transform:translateY(0);}
-}
-.step h3{font-size:clamp(20px,2.6vw,26px);margin-bottom:26px;text-align:center;}
+/* ============ 7. ЗАГОЛОВКИ И ШАГИ ============ */
+.section-head{ text-align:center; max-width:640px; margin:0 auto 52px; }
+.section-head h2{ font-size:clamp(26px,4vw,42px); margin-bottom:14px; }
+.section-head p{ color:var(--muted); font-size:16px; }
 
-.options{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:14px;
-}
-.option{
-  font-family:inherit;
-  font-size:15px;
-  font-weight:600;
-  color:var(--text);
-  text-align:left;
-  padding:20px 22px;
-  border-radius:16px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.025);
-  cursor:pointer;
-  position:relative;
-  transition:transform .3s var(--ease), border-color .3s var(--ease),
-             background .3s var(--ease), box-shadow .3s var(--ease);
-}
-.option::before{
-  content:"";
-  position:absolute;left:0;top:0;bottom:0;width:3px;
-  border-radius:16px 0 0 16px;
-  background:linear-gradient(180deg,var(--accent),var(--accent-2));
-  transform:scaleY(0);
-  transform-origin:top;
-  transition:transform .35s var(--ease);
-}
-.option:hover{
-  transform:translateY(-3px);
-  border-color:var(--line-strong);
-  background:rgba(255,255,255,.05);
-}
-.option.is-selected{
-  border-color:rgba(95,227,161,.55);
-  background:rgba(95,227,161,.09);
-  box-shadow:0 12px 34px -18px rgba(95,227,161,.9);
-}
-.option.is-selected::before{transform:scaleY(1);}
+.how{ padding:40px 0 90px; }
+.how__grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.how-card{ padding:34px 28px; border:1px solid var(--line); border-radius:var(--radius); background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.012)); transition:transform .45s var(--ease), border-color .45s var(--ease), background .45s var(--ease); }
+.how-card:hover{ transform:translateY(-6px); border-color:rgba(95,227,161,.35); background:linear-gradient(180deg,rgba(95,227,161,.07),rgba(255,255,255,.015)); }
+.how-card__idx{ display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; border-radius:13px; background:rgba(95,227,161,.12); border:1px solid rgba(95,227,161,.28); color:var(--accent); font-family:'Unbounded',sans-serif; font-size:14px; font-weight:700; margin-bottom:20px; }
+.how-card h3{ font-size:18px; margin-bottom:10px; }
+.how-card p{ color:var(--muted); font-size:14.5px; }
 
-.quiz-card__nav{
-  display:flex;justify-content:space-between;gap:14px;
-  margin-top:34px;
-}
+/* ============ 8. КВИЗ ============ */
+.quiz{ padding:40px 0 100px; }
+.quiz-card{ max-width:840px; margin:0 auto; border:1px solid var(--line); border-radius:26px; background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015)), var(--surface); padding:34px; box-shadow:0 40px 100px -60px rgba(0,0,0,.9); }
+.quiz-card__top{ display:flex; justify-content:space-between; align-items:center; font-size:13.5px; font-weight:700; color:var(--muted); margin-bottom:14px; }
+.quiz-card__top b{ color:var(--text); }
+.quiz-card__pct{ color:var(--accent); }
 
-/* ============ 8. РЕЗУЛЬТАТЫ ============ */
-.results{padding:20px 0 110px;}
-.results__grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:18px;
-}
-.result-card{
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));
-  padding:26px 26px 24px;
-  position:relative;
-  overflow:hidden;
-  opacity:0;
-  transform:translateY(22px);
-  transition:transform .5s var(--ease), border-color .35s var(--ease),
-             background .35s var(--ease), opacity .5s var(--ease);
-}
-.result-card.is-in{opacity:1;transform:translateY(0);}
-.result-card::before{
-  content:"";
-  position:absolute;inset:0;
-  background:radial-gradient(400px 160px at 100% 0%,rgba(95,227,161,.14),transparent 70%);
-  opacity:0;
-  transition:opacity .45s var(--ease);
-  pointer-events:none;
-}
-.result-card:hover{
-  border-color:rgba(95,227,161,.35);
-  transform:translateY(-4px);
-}
-.result-card:hover::before{opacity:1;}
+.progress{ height:6px; border-radius:999px; background:rgba(255,255,255,.07); overflow:hidden; margin-bottom:34px; }
+.progress__bar{ height:100%; width:25%; border-radius:999px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); box-shadow:0 0 18px rgba(95,227,161,.6); transition:width .5s var(--ease); }
 
-.result-card__head{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;margin-bottom:16px;
-}
-.result-card__idx{
-  font-family:'Unbounded',sans-serif;
-  font-size:12px;font-weight:700;
-  color:var(--muted);
-  letter-spacing:.08em;
-}
-.result-card__sum{
-  font-size:12.5px;font-weight:800;
-  color:var(--accent);
-  background:rgba(95,227,161,.1);
-  border:1px solid rgba(95,227,161,.3);
-  padding:5px 12px;
-  border-radius:999px;
-  white-space:nowrap;
-}
-.result-card h3{font-size:17px;margin-bottom:10px;line-height:1.3;}
-.result-card p{color:var(--muted);font-size:14px;margin-bottom:16px;}
+.step{ display:none; }
+.step.is-active{ display:block; animation:stepIn .45s var(--ease); }
+@keyframes stepIn{ from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:translateY(0);} }
+.step h3{ font-size:clamp(20px,2.6vw,26px); margin-bottom:26px; text-align:center; }
 
-.chips{display:flex;flex-wrap:wrap;gap:7px;}
-.chip{
-  font-size:12px;font-weight:600;
-  color:var(--muted);
-  padding:5px 11px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.03);
-}
+.options{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+.option{ font-family:inherit; font-size:15px; font-weight:600; color:var(--text); text-align:left; padding:20px 22px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.025); cursor:pointer; position:relative; transition:transform .3s var(--ease), border-color .3s var(--ease), background .3s var(--ease), box-shadow .3s var(--ease); }
+.option::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:3px; border-radius:16px 0 0 16px; background:linear-gradient(180deg,var(--accent),var(--accent-2)); transform:scaleY(0); transform-origin:top; transition:transform .35s var(--ease); }
+.option:hover{ transform:translateY(-3px); border-color:var(--line-strong); background:rgba(255,255,255,.05); }
+.option.is-selected{ border-color:rgba(95,227,161,.55); background:rgba(95,227,161,.09); box-shadow:0 12px 34px -18px rgba(95,227,161,.9); }
+.option.is-selected::before{ transform:scaleY(1); }
 
-.results__foot{
-  display:flex;justify-content:center;gap:14px;
-  margin-top:46px;flex-wrap:wrap;
-}
+.quiz-card__nav{ display:flex; justify-content:space-between; gap:14px; margin-top:34px; }
 
-.empty{
-  grid-column:1 / -1;
-  text-align:center;
-  padding:60px 24px;
-  color:var(--muted);
-  border:1px dashed var(--line-strong);
-  border-radius:var(--radius);
-}
+/* ============ 9. РЕЗУЛЬТАТЫ ============ */
+.results{ padding:20px 0 110px; }
+.results__grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+.result-card{ border:1px solid var(--line); border-radius:var(--radius); background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012)); padding:26px; position:relative; overflow:hidden; opacity:0; transform:translateY(22px); transition:all .5s var(--ease); }
+.result-card.is-in{ opacity:1; transform:translateY(0); }
+.result-card::before{ content:""; position:absolute; inset:0; background:radial-gradient(400px 160px at 100% 0%,rgba(95,227,161,.14),transparent 70%); opacity:0; transition:opacity .45s var(--ease); pointer-events:none; }
+.result-card:hover{ border-color:rgba(95,227,161,.35); transform:translateY(-4px); }
+.result-card:hover::before{ opacity:1; }
 
-/* ============ 9. ФУТЕР ============ */
-.footer{
-  border-top:1px solid var(--line);
-  padding:40px 0;
-  text-align:center;
-  color:var(--muted);
-  font-size:13.5px;
-}
-.footer b{color:var(--text);}
+.result-card__head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+.result-card__idx{ font-family:'Unbounded',sans-serif; font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.08em; }
+.result-card__sum{ font-size:12.5px; font-weight:800; color:var(--accent); background:rgba(95,227,161,.1); border:1px solid rgba(95,227,161,.3); padding:5px 12px; border-radius:999px; white-space:nowrap; }
+.result-card h3{ font-size:17px; margin-bottom:10px; line-height:1.3; }
+.result-card p{ color:var(--muted); font-size:14px; margin-bottom:16px; }
+.chips{ display:flex; flex-wrap:wrap; gap:7px; }
+.chip{ font-size:12px; font-weight:600; color:var(--muted); padding:5px 11px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.03); }
 
-/* ============ 10. REVEAL ============ */
-.reveal{
-  opacity:0;
-  transform:translateY(26px);
-  transition:opacity .7s var(--ease), transform .7s var(--ease);
-}
-.reveal.is-visible{opacity:1;transform:translateY(0);}
-.d1{transition-delay:.08s;}
-.d2{transition-delay:.16s;}
-.d3{transition-delay:.24s;}
-.d4{transition-delay:.32s;}
+.results__foot{ display:flex; justify-content:center; gap:14px; margin-top:46px; flex-wrap:wrap; }
+.empty{ grid-column:1 / -1; text-align:center; padding:60px 24px; color:var(--muted); border:1px dashed var(--line-strong); border-radius:var(--radius); }
+
+/* ============ 10. ФУТЕР ============ */
+.footer{ border-top:1px solid var(--line); padding:40px 0; text-align:center; color:var(--muted); font-size:13.5px; }
+.footer b{ color:var(--text); }
 
 /* ============ 11. АДАПТИВ ============ */
 @media (max-width:900px){
-  .stats__inner{grid-template-columns:repeat(2,1fr);}
-  .stat:nth-child(3)::before{display:none;}
-  .stat:nth-child(3),.stat:nth-child(4){border-top:1px solid var(--line);}
-  .how__grid{grid-template-columns:1fr;}
-  .results__grid{grid-template-columns:1fr;}
+  .stats__inner{ grid-template-columns:repeat(2,1fr); }
+  .stat:nth-child(3)::before{ display:none; }
+  .stat:nth-child(3),.stat:nth-child(4){ border-top:1px solid var(--line); }
+  .how__grid{ grid-template-columns:1fr; }
+  .results__grid{ grid-template-columns:1fr; }
+  .nav__links{ display:none; }
 }
 @media (max-width:640px){
-  .nav__links{display:none;}
-  .hero{padding:80px 0 60px;}
-  .quiz-card{padding:24px 18px;border-radius:20px;}
-  .options{grid-template-columns:1fr;}
-  .quiz-card__nav{flex-direction:column-reverse;}
-  .quiz-card__nav .btn{width:100%;}
-  .hero__actions .btn{width:100%;}
+  .hero{ padding:80px 0 60px; }
+  .quiz-card{ padding:24px 18px; border-radius:20px; }
+  .options{ grid-template-columns:1fr; }
+  .quiz-card__nav{ flex-direction:column-reverse; }
+  .quiz-card__nav .btn{ width:100%; }
+  .hero__actions .btn{ width:100%; }
+  .auth-card{ padding:30px 20px; }
 }
-
-/* ============ 12. REDUCED MOTION ============ */
 @media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{
-    animation-duration:.001ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:.001ms !important;
-  }
-  .reveal{opacity:1;transform:none;}
-  .result-card{opacity:1;transform:none;}
+  *,*::before,*::after{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- ===== NAV ===== -->
+<!-- ========================================== -->
+<!-- ЭКРАН АВТОРИЗАЦИИ                          -->
+<!-- ========================================== -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-card">
+    <div class="auth-logo">Eligible</div>
+    <p class="auth-desc">Войдите, чтобы ваши ответы и история подборок сохранялись.</p>
+
+    <div class="auth-tabs">
+      <div class="auth-tab is-active" id="tabLogin">Вход</div>
+      <div class="auth-tab" id="tabReg">Регистрация</div>
+    </div>
+
+    <form class="auth-form" id="authForm">
+      <div class="form-group">
+        <label class="form-label" for="authUser">Логин</label>
+        <input type="text" id="authUser" class="input" placeholder="Придумайте логин" autocomplete="username" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="authPass">Пароль</label>
+        <input type="password" id="authPass" class="input" placeholder="Минимум 4 символа" autocomplete="current-password" required />
+      </div>
+      <div class="auth-error" id="authError"></div>
+      <button type="submit" class="btn btn--primary" id="authSubmitBtn" style="width:100%; margin-top:10px;">Войти</button>
+    </form>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ОСНОВНОЙ САЙТ                              -->
+<!-- ========================================== -->
 <header class="nav">
   <div class="nav__inner">
     <a class="brand" href="#top">
       <span class="brand__mark"></span>
-      <span class="brand__text">ЛьготНавигатор</span>
+      <span class="brand__text">Eligible</span>
     </a>
     <nav class="nav__links">
       <a href="#how">Как это работает</a>
       <a href="#quiz">Подобрать</a>
       <a href="#results">Результат</a>
     </nav>
+    <div class="nav__user">
+      <div class="user-badge">
+        <span class="user-badge__avatar" id="userAvatar">U</span>
+        <span id="userName">Пользователь</span>
+      </div>
+      <button class="btn btn--ghost btn--small" id="logoutBtn">Выйти</button>
+    </div>
   </div>
 </header>
 
-<!-- ===== HERO ===== -->
 <section class="hero" id="top">
   <div class="hero__glow hero__glow--a"></div>
   <div class="hero__glow hero__glow--b"></div>
-
   <div class="container hero__inner">
-    <span class="pill reveal">Обновлено · ноябрь 2026</span>
-
-    <h1 class="hero__title reveal d1">
-      Узнайте, какие льготы<br />
-      <span class="grad">вам положены</span>
-    </h1>
-
-    <p class="hero__sub reveal d2">
-      Четыре вопроса — и вы получите персональный список выплат, компенсаций
-      и льгот с перечнем документов и сроков обращения.
-    </p>
-
+    <span class="pill reveal">Ваш личный кабинет активен</span>
+    <h1 class="hero__title reveal d1">Узнайте, какие льготы<br /><span class="grad">вам положены</span></h1>
+    <p class="hero__sub reveal d2">Четыре вопроса — и вы получите персональный список выплат, компенсаций и льгот с перечнем документов.</p>
     <div class="hero__actions reveal d3">
-      <a href="#quiz" class="btn btn--primary">
-        Подобрать льготы <span class="btn__arrow">→</span>
-      </a>
-      <a href="#how" class="btn btn--ghost">Как это работает</a>
+      <a href="#quiz" class="btn btn--primary">Подобрать льготы <span class="btn__arrow">→</span></a>
     </div>
   </div>
 </section>
 
-<!-- ===== STATS ===== -->
 <section class="stats">
   <div class="container">
     <div class="stats__inner reveal">
-      <div class="stat">
-        <span class="stat__num" data-count="312">0</span>
-        <span class="stat__label">мер поддержки</span>
-      </div>
-      <div class="stat">
-        <span class="stat__num" data-count="89">0</span>
-        <span class="stat__label">регионов</span>
-      </div>
-      <div class="stat">
-        <span class="stat__num" data-count="4">0</span>
-        <span class="stat__label">вопроса</span>
-      </div>
-      <div class="stat">
-        <span class="stat__num" data-count="0" data-suffix=" ₽">0</span>
-        <span class="stat__label">за регистрацию</span>
-      </div>
+      <div class="stat"><span class="stat__num" data-count="312">0</span><span class="stat__label">мер поддержки</span></div>
+      <div class="stat"><span class="stat__num" data-count="89">0</span><span class="stat__label">регионов</span></div>
+      <div class="stat"><span class="stat__num" data-count="4">0</span><span class="stat__label">вопроса</span></div>
+      <div class="stat"><span class="stat__num" data-count="0" data-suffix=" ₽">0</span><span class="stat__label">за регистрацию</span></div>
     </div>
   </div>
 </section>
 
-<!-- ===== HOW ===== -->
 <section class="how" id="how">
   <div class="container">
     <div class="section-head reveal">
       <h2>Три шага до ответа</h2>
-      <p>Без регистрации, без звонков и без ожидания в очереди.</p>
+      <p>Без звонков, очередей и сложных форм.</p>
     </div>
-
     <div class="how__grid">
-      <article class="how-card reveal d1">
-        <span class="how-card__idx">01</span>
-        <h3>Отвечаете на 4 вопроса</h3>
-        <p>Статус, особая категория, доход и приоритетное направление — по 10 секунд на каждый.</p>
-      </article>
-      <article class="how-card reveal d2">
-        <span class="how-card__idx">02</span>
-        <h3>Получаете список</h3>
-        <p>Алгоритм отбирает подходящие меры поддержки и сортирует их по сумме и доступности.</p>
-      </article>
-      <article class="how-card reveal d3">
-        <span class="how-card__idx">03</span>
-        <h3>Забираете чек-лист</h3>
-        <p>К каждой мере — перечень документов, срок рассмотрения и куда обращаться.</p>
-      </article>
+      <article class="how-card reveal d1"><span class="how-card__idx">01</span><h3>Отвечаете на 4 вопроса</h3><p>Статус, особая категория, доход и приоритетное направление.</p></article>
+      <article class="how-card reveal d2"><span class="how-card__idx">02</span><h3>Получаете список</h3><p>Алгоритм отбирает подходящие меры поддержки и сортирует их.</p></article>
+      <article class="how-card reveal d3"><span class="how-card__idx">03</span><h3>Забираете чек-лист</h3><p>К каждой мере — перечень документов и срок рассмотрения.</p></article>
     </div>
   </div>
 </section>
 
-<!-- ===== QUIZ ===== -->
 <section class="quiz" id="quiz">
   <div class="container">
-    <div class="section-head reveal">
-      <h2>Подбор льгот</h2>
-      <p>Ответы остаются в вашем браузере и никуда не отправляются.</p>
-    </div>
-
+    <div class="section-head reveal"><h2>Подбор льгот</h2><p>Ответы сохраняются в вашем аккаунте.</p></div>
     <div class="quiz-card reveal d1" id="quizCard">
       <div class="quiz-card__top">
         <span>Шаг <b id="stepNum">1</b> из 4</span>
         <span class="quiz-card__pct" id="stepPct">25%</span>
       </div>
-
-      <div class="progress">
-        <div class="progress__bar" id="progressBar"></div>
-      </div>
-
+      <div class="progress"><div class="progress__bar" id="progressBar"></div></div>
       <div class="steps" id="steps">
-
         <div class="step is-active" data-step="0">
           <h3>Кто вы?</h3>
           <div class="options" data-name="status">
@@ -668,7 +344,6 @@ a{color:inherit;text-decoration:none;}
             <button class="option" data-value="family">Семья с детьми</button>
           </div>
         </div>
-
         <div class="step" data-step="1">
           <h3>Есть особая категория?</h3>
           <div class="options" data-name="category">
@@ -678,7 +353,6 @@ a{color:inherit;text-decoration:none;}
             <button class="option" data-value="none">Нет</button>
           </div>
         </div>
-
         <div class="step" data-step="2">
           <h3>Средний доход на человека</h3>
           <div class="options" data-name="income">
@@ -688,7 +362,6 @@ a{color:inherit;text-decoration:none;}
             <button class="option" data-value="high">Высокий</button>
           </div>
         </div>
-
         <div class="step" data-step="3">
           <h3>Что важнее всего?</h3>
           <div class="options" data-name="interest">
@@ -698,32 +371,23 @@ a{color:inherit;text-decoration:none;}
             <button class="option" data-value="all">Показать всё</button>
           </div>
         </div>
-
       </div>
-
       <div class="quiz-card__nav">
         <button class="btn btn--ghost" id="prevBtn" disabled>← Назад</button>
-        <button class="btn btn--primary" id="nextBtn" disabled>
-          Далее <span class="btn__arrow">→</span>
-        </button>
+        <button class="btn btn--primary" id="nextBtn" disabled>Далее <span class="btn__arrow">→</span></button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== RESULTS ===== -->
 <section class="results" id="results" hidden>
   <div class="container">
     <div class="section-head">
       <span class="pill">Готово</span>
-      <h2 style="margin-top:20px">
-        Вам может подойти <span class="grad" id="resCount">0</span> мер
-      </h2>
-      <p>Проверьте документы — и подавайте заявление. Список можно пройти заново.</p>
+      <h2 style="margin-top:20px">Вам может подойти <span class="grad" id="resCount">0</span> мер</h2>
+      <p>Результат сохранен в вашем аккаунте.</p>
     </div>
-
     <div class="results__grid" id="resultsGrid"></div>
-
     <div class="results__foot">
       <button class="btn btn--ghost" id="restartBtn">↺ Пройти заново</button>
       <button class="btn btn--primary" id="printBtn">Скачать чек-лист</button>
@@ -731,32 +395,173 @@ a{color:inherit;text-decoration:none;}
   </div>
 </section>
 
-<!-- ===== FOOTER ===== -->
 <footer class="footer">
-  <div class="container">
-    <b>ЛьготНавигатор</b> · демо-проект. Данные носят справочный характер,<br />
-    точный перечень уточняйте в МФЦ или на «Госуслугах».
-  </div>
+  <div class="container"><b>Eligible</b> · демо-проект. Данные носят справочный характер.</div>
 </footer>
 
 <script>
 (() => {
   'use strict';
 
-  /* ========== 1. REVEAL + СЧЁТЧИКИ ========== */
+  /* ========== 1. УПРАВЛЕНИЕ АККАУНТОМ ========== */
+  const authScreen = document.getElementById('authScreen');
+  const authForm = document.getElementById('authForm');
+  const authUser = document.getElementById('authUser');
+  const authPass = document.getElementById('authPass');
+  const authError = document.getElementById('authError');
+  const authSubmitBtn = document.getElementById('authSubmitBtn');
+  const tabLogin = document.getElementById('tabLogin');
+  const tabReg = document.getElementById('tabReg');
+  const userNameEl = document.getElementById('userName');
+  const userAvatarEl = document.getElementById('userAvatar');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  let isLoginMode = true;
+  let currentSession = null;
+
+  // Переключение вкладок Вход/Регистрация
+  tabLogin.addEventListener('click', () => {
+    isLoginMode = true;
+    tabLogin.classList.add('is-active');
+    tabReg.classList.remove('is-active');
+    authSubmitBtn.textContent = 'Войти';
+    authError.classList.remove('is-visible');
+  });
+
+  tabReg.addEventListener('click', () => {
+    isLoginMode = false;
+    tabReg.classList.add('is-active');
+    tabLogin.classList.remove('is-active');
+    authSubmitBtn.textContent = 'Создать аккаунт';
+    authError.classList.remove('is-visible');
+  });
+
+  // Генерация случайного кода (ID аккаунта)
+  function generateAccountId() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = 'ELG-';
+    for (let i = 0; i < 6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
+    return result;
+  }
+
+  // Простейший хеш пароля (для демо, не для реального продакшена)
+  function simpleHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return hash.toString(16);
+  }
+
+  // Получить базу пользователей из localStorage
+  function getUsers() {
+    return JSON.parse(localStorage.getItem('eligible_users') || '{}');
+  }
+
+  // Сохранить базу пользователей
+  function saveUsers(users) {
+    localStorage.setItem('eligible_users', JSON.stringify(users));
+  }
+
+  // Обработка формы
+  authForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const login = authUser.value.trim().toLowerCase();
+    const pass = authPass.value;
+    
+    if (login.length < 3) return showError('Логин должен быть не менее 3 символов');
+    if (pass.length < 4) return showError('Пароль должен быть не менее 4 символов');
+
+    const users = getUsers();
+
+    if (isLoginMode) {
+      // ВХОД
+      if (!users[login] || users[login].passHash !== simpleHash(pass)) {
+        return showError('Неверный логин или пароль');
+      }
+      startSession(login, users[login]);
+    } else {
+      // РЕГИСТРАЦИЯ
+      if (users[login]) {
+        return showError('Этот логин уже занят');
+      }
+      
+      const newAccount = {
+        id: generateAccountId(), // Генерируем уникальный код
+        passHash: simpleHash(pass),
+        createdAt: new Date().toISOString(),
+        history: []
+      };
+      
+      users[login] = newAccount;
+      saveUsers(users);
+      
+      alert(`Аккаунт создан!\nВаш уникальный код: ${newAccount.id}\nСохраните его.`);
+      startSession(login, newAccount);
+    }
+  });
+
+  function showError(msg) {
+    authError.textContent = msg;
+    authError.classList.add('is-visible');
+  }
+
+  function startSession(login, userData) {
+    currentSession = { login, data: userData };
+    localStorage.setItem('eligible_active_session', login);
+    
+    // Обновляем UI
+    userNameEl.textContent = login;
+    userAvatarEl.textContent = login.substring(0, 1).toUpperCase();
+    
+    authScreen.classList.add('is-hidden');
+    document.body.style.overflow = '';
+  }
+
+  // Проверка активной сессии при загрузке
+  function checkSession() {
+    const activeLogin = localStorage.getItem('eligible_active_session');
+    if (activeLogin) {
+      const users = getUsers();
+      if (users[activeLogin]) {
+        startSession(activeLogin, users[activeLogin]);
+      }
+    } else {
+      // Прячем скролл, пока не вошли
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  // Выход
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('eligible_active_session');
+    currentSession = null;
+    authScreen.classList.remove('is-hidden');
+    document.body.style.overflow = 'hidden';
+    authUser.value = '';
+    authPass.value = '';
+  });
+
+  checkSession();
+
+  /* ========== 2. АНИМАЦИИ И СЧЁТЧИКИ ========== */
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('is-visible');
-      revealObserver.unobserve(entry.target);
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
     });
   }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
 
   const countObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      animateCount(entry.target);
-      countObserver.unobserve(entry.target);
+      if (entry.isIntersecting) {
+        animateCount(entry.target);
+        countObserver.unobserve(entry.target);
+      }
     });
   }, { threshold: 0.4 });
 
@@ -765,7 +570,6 @@ a{color:inherit;text-decoration:none;}
     const suffix = el.dataset.suffix || '';
     const duration = 1200;
     const start = performance.now();
-
     function tick(now) {
       const p = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - p, 3);
@@ -775,131 +579,30 @@ a{color:inherit;text-decoration:none;}
     requestAnimationFrame(tick);
   }
 
-  function observeAll() {
-    document.querySelectorAll('.reveal:not(.is-visible)').forEach((el) => revealObserver.observe(el));
-    document.querySelectorAll('.stat__num').forEach((el) => countObserver.observe(el));
-  }
-  observeAll();
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  document.querySelectorAll('.stat__num').forEach(el => countObserver.observe(el));
 
-  /* ========== 2. БАЗА МЕР ПОДДЕРЖКИ ========== */
+  /* ========== 3. БАЗА МЕР ПОДДЕРЖКИ ========== */
   const lowIncome = (a) => a.income === 'low' || a.income === 'lower';
 
   const BENEFITS = [
-    {
-      title: 'Единое пособие на детей',
-      sum: 'до 19 000 ₽ / мес',
-      desc: 'Ежемесячная выплата семьям с детьми до 17 лет при среднедушевом доходе ниже прожиточного минимума.',
-      docs: ['Паспорт', 'Свидетельство о рождении', 'Справка о доходах'],
-      tags: ['money'],
-      match: (a) => a.status === 'family' && lowIncome(a)
-    },
-    {
-      title: 'Материнский капитал',
-      sum: 'до 833 000 ₽',
-      desc: 'Однократная выплата при рождении первого, второго и последующих детей. Можно направить на жильё, обучение или пенсию.',
-      docs: ['Паспорт', 'Свидетельства о рождении'],
-      tags: ['money'],
-      match: (a) => a.status === 'family' || a.category === 'many'
-    },
-    {
-      title: 'Выплата многодетным семьям',
-      sum: 'до 12 000 ₽ / мес',
-      desc: 'Региональная ежемесячная компенсация на третьего и последующих детей до 18 лет.',
-      docs: ['Удостоверение многодетной семьи', 'Справка о составе семьи'],
-      tags: ['money'],
-      match: (a) => a.category === 'many'
-    },
-    {
-      title: 'Компенсация расходов на ЖКХ',
-      sum: '30–50% счёта',
-      desc: 'Скидка на оплату жилищно-коммунальных услуг для льготных категорий граждан.',
-      docs: ['Документ о льготе', 'Квитанции ЖКХ', 'Справка о составе семьи'],
-      tags: ['zhkh'],
-      match: (a) => ['many', 'veteran', 'disabled'].includes(a.category)
-    },
-    {
-      title: 'Субсидия на оплату ЖКХ',
-      sum: 'до 100% платежа',
-      desc: 'Если расходы на коммуналку превышают 22% дохода семьи — часть платежа компенсирует государство.',
-      docs: ['Справка о доходах', 'Квитанции', 'Выписка из домовой книги'],
-      tags: ['zhkh'],
-      match: (a) => lowIncome(a) || a.status === 'pensioner'
-    },
-    {
-      title: 'Налоговый вычет за лечение',
-      sum: 'до 19 500 ₽ / год',
-      desc: 'Возврат 13% от стоимости медицинских услуг, лекарств и страховки для себя и близких.',
-      docs: ['Чеки и договор', 'Справка об оплате', 'Декларация 3-НДФЛ'],
-      tags: ['tax'],
-      match: () => true
-    },
-    {
-      title: 'Налоговый вычет за спорт',
-      sum: 'до 15 600 ₽ / год',
-      desc: 'Возврат 13% за фитнес, бассейн и секции, если клуб входит в официальный перечень.',
-      docs: ['Договор с клубом', 'Чеки', 'Декларация 3-НДФЛ'],
-      tags: ['tax'],
-      match: (a) => a.status === 'worker' || a.status === 'student'
-    },
-    {
-      title: 'Социальная доплата к пенсии',
-      sum: 'до 15 000 ₽ / мес',
-      desc: 'Доплата до уровня прожиточного минимума пенсионера в вашем регионе.',
-      docs: ['Пенсионное удостоверение', 'Справка о доходах'],
-      tags: ['money'],
-      match: (a) => a.status === 'pensioner' && lowIncome(a)
-    },
-    {
-      title: 'Ежемесячная выплата ветеранам',
-      sum: 'до 8 500 ₽ / мес',
-      desc: 'Денежная компенсация и набор социальных услуг для ветеранов боевых действий.',
-      docs: ['Удостоверение ветерана', 'СНИЛС'],
-      tags: ['money'],
-      match: (a) => a.category === 'veteran'
-    },
-    {
-      title: 'Бесплатные лекарства',
-      sum: 'по рецепту',
-      desc: 'Лекарства по рецепту врача за счёт бюджета для отдельных категорий граждан.',
-      docs: ['Полис ОМС', 'Заключение врача', 'Документ о льготе'],
-      tags: ['money', 'all'],
-      match: (a) => a.category === 'disabled' || a.status === 'pensioner'
-    },
-    {
-      title: 'Льготный проезд',
-      sum: '−50–100%',
-      desc: 'Бесплатный или со скидкой проезд в городском транспорте и пригородных электричках.',
-      docs: ['Документ о льготе', 'Социальная карта'],
-      tags: ['money'],
-      match: (a) => ['pensioner', 'student'].includes(a.status) || a.category === 'many'
-    },
-    {
-      title: 'Социальная стипендия',
-      sum: 'до 12 000 ₽ / мес',
-      desc: 'Повышенная стипендия для студентов из малообеспеченных семей и льготных категорий.',
-      docs: ['Справка из деканата', 'Справка о доходах'],
-      tags: ['money'],
-      match: (a) => a.status === 'student' && lowIncome(a)
-    },
-    {
-      title: 'Льготная ипотека для семей с детьми',
-      sum: 'от 5% годовых',
-      desc: 'Сниженная ставка при рождении ребёнка — на новостройку или вторичное жильё в ряде регионов.',
-      docs: ['Свидетельство о рождении', 'Справка о доходах', 'Договор ДКП'],
-      tags: ['money', 'tax'],
-      match: (a) => a.status === 'family' || a.category === 'many'
-    },
-    {
-      title: 'Компенсация за детский сад',
-      sum: 'до 70% оплаты',
-      desc: 'Возврат части родительской платы за детский сад в зависимости от количества детей.',
-      docs: ['Договор с садом', 'Квитанции', 'Свидетельства о рождении'],
-      tags: ['money'],
-      match: (a) => a.status === 'family'
-    }
+    { title: 'Единое пособие на детей', sum: 'до 19 000 ₽ / мес', desc: 'Ежемесячная выплата семьям с детьми до 17 лет при доходе ниже прожиточного минимума.', docs: ['Паспорт', 'Свидетельство о рождении', 'Справка о доходах'], tags: ['money'], match: (a) => a.status === 'family' && lowIncome(a) },
+    { title: 'Материнский капитал', sum: 'до 833 000 ₽', desc: 'Однократная выплата при рождении детей. Можно направить на жильё, обучение или пенсию.', docs: ['Паспорт', 'Свидетельства о рождении'], tags: ['money'], match: (a) => a.status === 'family' || a.category === 'many' },
+    { title: 'Выплата многодетным семьям', sum: 'до 12 000 ₽ / мес', desc: 'Региональная ежемесячная компенсация на третьего и последующих детей до 18 лет.', docs: ['Удостоверение многодетной семьи', 'Справка о составе семьи'], tags: ['money'], match: (a) => a.category === 'many' },
+    { title: 'Компенсация расходов на ЖКХ', sum: '30–50% счёта', desc: 'Скидка на оплату жилищно-коммунальных услуг для льготных категорий граждан.', docs: ['Документ о льготе', 'Квитанции ЖКХ'], tags: ['zhkh'], match: (a) => ['many', 'veteran', 'disabled'].includes(a.category) },
+    { title: 'Субсидия на оплату ЖКХ', sum: 'до 100% платежа', desc: 'Если расходы на коммуналку превышают 22% дохода семьи — часть платежа компенсирует государство.', docs: ['Справка о доходах', 'Квитанции'], tags: ['zhkh'], match: (a) => lowIncome(a) || a.status === 'pensioner' },
+    { title: 'Налоговый вычет за лечение', sum: 'до 19 500 ₽ / год', desc: 'Возврат 13% от стоимости медицинских услуг, лекарств и страховки для себя и близких.', docs: ['Чеки и договор', 'Декларация 3-НДФЛ'], tags: ['tax'], match: () => true },
+    { title: 'Налоговый вычет за спорт', sum: 'до 15 600 ₽ / год', desc: 'Возврат 13% за фитнес, бассейн и секции, если клуб входит в официальный перечень.', docs: ['Договор с клубом', 'Чеки', 'Декларация'], tags: ['tax'], match: (a) => a.status === 'worker' || a.status === 'student' },
+    { title: 'Социальная доплата к пенсии', sum: 'до 15 000 ₽ / мес', desc: 'Доплата до уровня прожиточного минимума пенсионера в вашем регионе.', docs: ['Пенсионное удостоверение', 'Справка о доходах'], tags: ['money'], match: (a) => a.status === 'pensioner' && lowIncome(a) },
+    { title: 'Ежемесячная выплата ветеранам', sum: 'до 8 500 ₽ / мес', desc: 'Денежная компенсация и набор социальных услуг для ветеранов боевых действий.', docs: ['Удостоверение ветерана', 'СНИЛС'], tags: ['money'], match: (a) => a.category === 'veteran' },
+    { title: 'Бесплатные лекарства', sum: 'по рецепту', desc: 'Лекарства по рецепту врача за счёт бюджета для отдельных категорий граждан.', docs: ['Полис ОМС', 'Заключение врача'], tags: ['money', 'all'], match: (a) => a.category === 'disabled' || a.status === 'pensioner' },
+    { title: 'Льготный проезд', sum: '−50–100%', desc: 'Бесплатный или со скидкой проезд в городском транспорте и пригородных электричках.', docs: ['Документ о льготе', 'Социальная карта'], tags: ['money'], match: (a) => ['pensioner', 'student'].includes(a.status) || a.category === 'many' },
+    { title: 'Социальная стипендия', sum: 'до 12 000 ₽ / мес', desc: 'Повышенная стипендия для студентов из малообеспеченных семей и льготных категорий.', docs: ['Справка из деканата', 'Справка о доходах'], tags: ['money'], match: (a) => a.status === 'student' && lowIncome(a) },
+    { title: 'Льготная ипотека для семей', sum: 'от 5% годовых', desc: 'Сниженная ставка при рождении ребёнка — на новостройку или вторичное жильё.', docs: ['Свидетельство о рождении', 'Справка о доходах'], tags: ['money', 'tax'], match: (a) => a.status === 'family' || a.category === 'many' },
+    { title: 'Компенсация за детский сад', sum: 'до 70% оплаты', desc: 'Возврат части родительской платы за детский сад в зависимости от количества детей.', docs: ['Договор с садом', 'Квитанции'], tags: ['money'], match: (a) => a.status === 'family' }
   ];
 
-  /* ========== 3. ЛОГИКА КВИЗА ========== */
+  /* ========== 4. ЛОГИКА КВИЗА ========== */
   const state = { status: null, category: null, income: null, interest: null };
   const TOTAL_STEPS = 4;
   let current = 0;
@@ -957,7 +660,7 @@ a{color:inherit;text-decoration:none;}
     }
   });
 
-  /* ========== 4. РЕЗУЛЬТАТЫ ========== */
+  /* ========== 5. РЕЗУЛЬТАТЫ И СОХРАНЕНИЕ ========== */
   function showResults() {
     const matched = BENEFITS.filter((b) => {
       if (!b.match(state)) return false;
@@ -967,8 +670,7 @@ a{color:inherit;text-decoration:none;}
     resultsGrid.innerHTML = '';
 
     if (!matched.length) {
-      resultsGrid.innerHTML =
-        '<div class="empty">По выбранным параметрам мер не найдено. Попробуйте изменить ответы — например, выбрать «Показать всё».</div>';
+      resultsGrid.innerHTML = '<div class="empty">По выбранным параметрам мер не найдено. Попробуйте изменить ответы.</div>';
     } else {
       matched.forEach((b, i) => {
         const card = document.createElement('article');
@@ -983,7 +685,6 @@ a{color:inherit;text-decoration:none;}
           <div class="chips">${b.docs.map((d) => `<span class="chip">${d}</span>`).join('')}</div>
         `;
         resultsGrid.appendChild(card);
-
         setTimeout(() => card.classList.add('is-in'), 90 * i + 60);
       });
     }
@@ -992,12 +693,29 @@ a{color:inherit;text-decoration:none;}
     quizCard.hidden = true;
     resultsSection.hidden = false;
 
+    // Сохраняем историю в аккаунт пользователя
+    if (currentSession) {
+      const users = getUsers();
+      const user = users[currentSession.login];
+      if (user) {
+        user.history.unshift({
+          date: new Date().toISOString(),
+          answers: { ...state },
+          found: matched.length
+        });
+        // Ограничим историю последними 10 записями
+        if (user.history.length > 10) user.history.pop();
+        saveUsers(users);
+        currentSession.data = user; // обновляем текущую сессию
+      }
+    }
+
     setTimeout(() => {
       resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 120);
   }
 
-  /* ========== 5. ПЕРЕЗАПУСК ========== */
+  /* ========== 6. ПЕРЕЗАПУСК ========== */
   restartBtn.addEventListener('click', () => {
     Object.keys(state).forEach((k) => (state[k] = null));
     document.querySelectorAll('.option').forEach((o) => o.classList.remove('is-selected'));
@@ -1009,10 +727,8 @@ a{color:inherit;text-decoration:none;}
     document.getElementById('quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
-  /* ========== 6. ПЕЧАТЬ / PDF ========== */
   printBtn.addEventListener('click', () => window.print());
 
-  /* ========== 7. ИНИЦИАЛИЗАЦИЯ ========== */
   updateUI();
 })();
 </script>
